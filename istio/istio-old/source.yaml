@@ -1,0 +1,17 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: istio-system
+  namespace: istio-system
+spec:
+  interval: 10m
+  ref:
+    branch: main
+  secretRef:
+    name: git-credential
+  url: https://github.com/FarEyeTechnologies/istio.git
+  ignore: |
+      # exclude all
+      /*
+      # include charts directory
+      !/manifests/charts/
