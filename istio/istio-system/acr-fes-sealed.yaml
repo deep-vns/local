@@ -1,0 +1,14 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: acr-fes
+  namespace: istio-system
+spec:
+  encryptedData:
+    .dockerconfigjson: AgA8ERl3gzFP8T4wZ7q+rxLJj+kw3TuPgBhUFNCFIyuf5SIAADYenJcyzgDi97RNByzcLiRWiNkvjQrE0NGRimRNn/hCcD0sUJsAxDtEzB6YuvOF6kO969TAW+TNGgeHTWzzqK8WRIP7u3EX2OOmq11O96ESTJvN+D46Y+ERU1Gu1fY7KJAIJ1HwOk5T2CCB/WLGY6ckzVh4uW1wwdEOee6ce5o2zIZaVbqdLLz/J3tZx+8uqndmtnMYLScjT5CVU8qeJq76bHXB86FsWaNNqmIPmPOSVsTDiTzdkz+w/gRmUoFpNd0a9iAAqUZHSs8njyTx6XNMYiql0izb6SPYpF4UrONxxWGUbAdqj7+iMcvnpALnb18CADnIoAkdUATv7EZn18rt70ziYSrnNUNKHGSiLEr6Eju+fEr7UOf5uYkxfCvysOogo/5Fdy5EHDRDRfuMi2uYSqJV2+heYL0SRUyhdbPykZ2opZ1Orrmrc3rriDJ1KyRvFNE4/iKT+kBuN3Tvb8mXUNq3YWZLzCXvDq98V746lEqwbwW3N8485x+BqKPMNWm0oNmQRj9AngwzGUWL1rofLQXMKi8tNCFcUVmAfoCx2ZCUN2eQnhCDL6PmZtO6p8O443hh7pD/nuwEuoHN3UoCmYdAQR1Y5G9qyCP93MQpr0nCannf2oAa/D0bbPGiBuLedZ7a5UR2FX/g5rik9Plsta4x5PyWTKM+fh1AZAcRxOU1SJ3ODEe/uptuvLkFCQMxyhAZ40jGQj7kOMZeJnuRVTncdNDaMwcEV2O3zkm2tvUUVrBGlF929dMJvZoe6BQ0oHWZqqkKrWC+j2/ZqtSMTKmwceBsSEJ26+IdAh3D+ZRStMYLNKB023JEKSanDnFPuVeADk0S9rRowtoPxjn+rWJ0puszKl8A22Cn95TFnpYL/mRUMx76OWN1vzPn/LeXEieIVxXvN/CV2AFUgCoV+jW+rJQHBRX+oPiNSCMHGtXNqTcyP7u5T5qSTnTS5Ezlql1GOhrdQAMw1+bb0g==
+  template:
+    data: null
+    metadata:
+      name: acr-fes
+      namespace: istio-system
+    type: kubernetes.io/dockerconfigjson

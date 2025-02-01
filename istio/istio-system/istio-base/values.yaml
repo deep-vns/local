@@ -1,0 +1,7 @@
+global:
+
+  imagePullSecrets:
+    - acr-fes
+
+  # Used to locate istiod.
+  istioNamespace: istio-system
