@@ -1,244 +1,122 @@
-fes-istio:
+enabled: true
+ingressGateway: ingressgateway
+oidc: oidc-proxy-provider-fes
+mobiSvc: mobi-service
+gateways:
+  fes-gw:
+    hosts:
+    - sea-fes-backend.fareye.co
+    - sea-k8s.fareye.co
+    tls: fareye-co-tls
+virtualServices:
+  mobi-vs:
+    enabled: true
+  ci-vs:
+    enabled: true
+  returns-vs:
+    enabled: true
+  minio-vs:
+    enabled: true
+  roster-vs:
+    enabled: true
+  sas-vs:
+    enabled: true
+  parcel-api-vs:
+    enabled: true
+authPolicy:
   enabled: true
-  ingressGateway: ingressgateway
-  oidc: oidc-proxy-provider-fes
-  mobiSvc: mobi-service
+  policies:
+    mobi-auth-policy-custom:
+      hosts: [ "sea-k8s.fareye.co" ]
 
+istio-ingress:
+  enabled: true
   gateways:
-    fes-gw:
-      hosts:
-      - '*.fareye.co'
-      tls: ""
-
-  virtualServices:
-    mobi-vs:
-      enabled: true
-      hosts:
-      - "staging.fareye.co"
-      - "walmart-staging.fareye.co"
-      - "staging-nginx.fareye.co"
-      - "hellofresh.fareye.co"
-      - staging-test.fareye.co
-      http:
-        /api/v1/cssdev/temp:retsol:$:add_order/add_process:
-          rewrite: "/setu/uspeed/v1/create-order"
-          host: connector-service-deployment-setu.connector-staging.svc.cluster.local
-          port: 8080
-
-        /app/rest/report/cash_reconciliation_dump_report:
-          host: fe-stack-mobi-service-scheduler
-          port: 80
-
-        /geosmart:
-          host: fe-stack-parser-address
-          port: 5000
-          
-        /mid-mile/incident-management/api:
-          rewrite: /api
-          host: fe-stack-track-incident-management
-          port: 8500
-
-        /mid-mile/operational-dashboard/api:
-          rewrite: /api
-          host: fe-stack-shipment-event-consumer
-          port: 8100
-
-        /plan/:
-          host: fe-stack-plan-frontend
-          port: 3001
-
-        /sdv:
-          host: fe-stack-shipment-data-validator
-          port: 5000
-
-        /stp:
-          host: fe-stack-service-time-prediction
-          port: 9090
-
-        /track-gts/:
-          rewrite: /
-          host: fe-stack-fareye-gts
-          port: 2750
-
-        /track-main/:
-          host: fe-stack-ror-app
-          port: 8080
-
-        /auth1/:
-          host: keycloak-auth-service-1-service
-          port: 8080
-          responseHeaders:
-            X-Frame-Options: allow-from https://staging.fareye.co
-          removeRequestHeaders:
-            - Origin
-
-        /auth2/:
-          host: keycloak-auth-service-2-service.keycloak-staging.svc.cluster.local
-          port: 8080
-          responseHeaders:
-            X-Frame-Options: allow-from https://staging.fareye.co
-          removeRequestHeaders:
-            - Origin
-
-    ci-vs:
-      enabled: true
-      hosts:
-      - "trackdev.fareye.co"
-      - "trackdev1.fareye.co"
-      - "trackdev-new.fareye.co"
-
-    returns-vs:
-      enabled: true
-      hosts:
-      - "staging-returns.fareye.co"
-    fcr-vs:
-      enabled: true
-      hosts:
-      - "fcr-staging.fareye.co"
-      - "fcr-staging1.fareye.co"
-      - "fcr-staging-new.fareye.co"
-    visibility-ui-vs:
-      enabled: true
-      hosts:
-      - "staging-visibility-ui.fareye.co"
-      - "staging-visibility-ui-new.fareye.co"
-    onboarding-service-vs:
-      enabled: true
-      hosts:
-      - "signup.fareye.co"
-      - "signup-new.fareye.co"
-    merchant-vs:
-      enabled: true
-      hosts:
-      - "grow-staging.fareye.co"
-      http:
-      /api:
-        host: fe-stack-merchant-portal-service
-        port: 8089
-    defaultHttp:
-      host: fe-stack-merchant-portal-frontend
-      port: 80
-    signup-vs:
-      enabled: true
-      hosts:
-      - "register.fareye.co"
-      - "register-new.fareye.co"
-    trn-vs:
-      enabled: true
-      hosts:
-      - "staging-tpt.fareye.io"
-
-  authPolicy:
-    enabled: true
-    policies:
-      mobi-auth-policy-custom:
-        hosts: [ "staging.fareye.co", "walmart-staging.fareye.co", "hellofresh.fareye.co", "staging-nginx.fareye.co" ]
-
-  envoyfilter:
-    keycloakCookiesToHeaderFilter:
-      enabled: false
-      listenerPort: "8080"
-      labelValue: "keycloak"
-    actuatorXForwardPortHeader: true
-    clientBodyMaxSize: true
-    clientHeaderBufferSize: false
-    connectTimeoutTcpKeepAlive: false
-    idleTimeout: false
-    luaFilter: true
-    proxyBufferSize: false
-    proxySendTimeout: false
-    removeHeaders: true
-
-  istio-ingress:
-    enabled: true
-    gateways:
-      istio-ingressgateway:
-        name: ingressgateway-istio-fes
-        labels:
-          app: istio-ingressgateway
-          istio: ingressgateway
-        cpu:
-          targetAverageUtilization: 70
-        memory:
-          targetAverageUtilization: 70
-
-        resources:
-          requests:
-            cpu: 200m
-            memory: 256Mi
-          limits:
-            cpu: 400m
-            memory: 512Mi
-
-        type: NodePort
-        rollingMaxSurge: 100%
-        rollingMaxUnavailable: 25%
-        autoscaleEnabled: true
-        autoscaleMin: 2
-        autoscaleMax: 4
-
-        serviceAnnotations:
-          service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "900"
-          alb.ingress.kubernetes.io/healthcheck-path: /healthz/ready
-          alb.ingress.kubernetes.io/healthcheck-port: "status-port"
-
-        nodeSelector: {}
-        tolerations: []
-
-    global:
-      # Used to locate istiod.
-      istioNamespace: istio-system
-
-  istio-ratelimit:
-    enabled: true
-    istioIngress:
-      labelSelector:
+    istio-ingressgateway:
+      name: istio-ingressgateway
+      labels:
+        app: istio-ingressgateway
         istio: ingressgateway
+      cpu:
+        targetAverageUtilization: 70
+      memory:
+        targetAverageUtilization: 70
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          cpu: 400m
+          memory: 512Mi
+      type: NodePort
+      rollingMaxSurge: 100%
+      rollingMaxUnavailable: 25%
+      autoscaleEnabled: true
+      autoscaleMin: 2
+      autoscaleMax: 4
+      serviceAnnotations:
+        service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "900"
+        alb.ingress.kubernetes.io/healthcheck-path: /healthz/ready
+        alb.ingress.kubernetes.io/healthcheck-port: "status-port"
+      nodeSelector: {}
+      tolerations: []
 
-    replicaCount: 3
-
-    imagePullSecrets:
-    - name: acr-fes
-
-    config:
-      LOG_LEVEL: debug
-      REDIS_SOCKET_TYPE: tcp
-      REDIS_URL: redis-istio-ratelimit-master:6379
-      USE_STATSD: "false"
-      RUNTIME_ROOT: /data
-      RUNTIME_SUBDIRECTORY: ratelimit
-      RUNTIME_WATCH_ROOT: "false"
-      RUNTIME_IGNOREDOTFILES: "true"
-      HOST: "::"
-      GRPC_HOST: "::"
-
-    resources:
-      requests:
-        memory: "200Mi"
-        cpu: "200m"
-      limits:
-        memory: "800Mi"
-        cpu: "1000m"
-
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-
-    rateLimitConfig:
-      domain: ingress
-      # A descriptor is a list of key/value pairs owned by a domain that the Ratelimit service uses to select the correct rate limit to use when limiting. 
-      # Descriptors are case-sensitive
-      descriptors:
-      - key: PATH
-        value: '/api/*'
-        rate_limit:
-          unit: second #<second, minute, hour, day>
-          requests_per_unit: 3 #<uint>
-
-    envoyFilter:
-      #The filter’s behaviour in case the rate limiting service does not respond back. 
-      #When it is set to true, Envoy will not allow traffic in case of communication failure 
-      #between rate limiting service and the proxy.
-      failure_mode_deny: false
-      #The timeout in milliseconds for the rate limit service RPC
-      timeout: 500ms
+  global:
+    # Used to locate istiod.
+    istioNamespace: istio-system
+istio-ratelimit:
+  enabled: true
+  istioIngress:
+    labelSelector:
+      istio: ingressgateway
+  replicaCount: 1
+  imagePullSecrets:
+  - name: acr-credential
+  config:
+    LOG_LEVEL: debug
+    REDIS_SOCKET_TYPE: tcp
+    REDIS_URL: redis-istio-ratelimit-master:6379
+    USE_STATSD: "false"
+    RUNTIME_ROOT: /data
+    RUNTIME_SUBDIRECTORY: ratelimit
+    RUNTIME_WATCH_ROOT: "false"
+    RUNTIME_IGNOREDOTFILES: "true"
+    HOST: "::"
+    GRPC_HOST: "::"
+  resources:
+    requests:
+      memory: "200Mi"
+      cpu: "200m"
+    limits:
+      memory: "800Mi"
+      cpu: "1000m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  rateLimitConfig:
+    # A domain is a container for a set of rate limits. All domains known to the Ratelimit service must be globally unique. 
+    domain: edge_proxy_per_ip
+    # A descriptor is a list of key/value pairs owned by a domain that the Ratelimit service uses to select the correct rate limit to use when limiting. 
+    # Descriptors are case-sensitive
+    descriptors:
+    - key: remote_address
+      rate_limit:
+        unit: second #<second, minute, hour, day>
+        requests_per_unit: 200 #<uint>
+    # Black list IP
+    - key: remote_address
+      value: 50.0.0.5
+      rate_limit:
+        unit: second
+        requests_per_unit: 0
+  envoyFilter:
+    #The filter’s behaviour in case the rate limiting service does not respond back. 
+    #When it is set to true, Envoy will not allow traffic in case of communication failure 
+    #between rate limiting service and the proxy.
+    failure_mode_deny: false
+    #The timeout in milliseconds for the rate limit service RPC
+    timeout: 200ms
+    rateLimitActions:
+    # Matches based on the client's IP address (source address)
+    # {}: No additional parameters required.
+    - remote_address: {}
