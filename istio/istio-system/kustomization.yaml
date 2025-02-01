@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - istio-base
   - istiod
-  - acr-fes-sealed.yaml
+  #- acr-fes-sealed.yaml
