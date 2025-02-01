@@ -65,7 +65,7 @@ istio-ingress:
     # Used to locate istiod.
     istioNamespace: istio-system
 istio-ratelimit:
-  enabled: true
+  enabled: false
   istioIngress:
     labelSelector:
       istio: ingressgateway
