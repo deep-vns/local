@@ -5,9 +5,8 @@ mobiSvc: mobi-service
 gateways:
   fes-gw:
     hosts:
-    - sea-fes-backend.fareye.co
-    - sea-k8s.fareye.co
-    tls: fareye-co-tls
+    - test.chandra.co
+    tls: chandra-co-tls
 virtualServices:
   mobi-vs:
     enabled: true
