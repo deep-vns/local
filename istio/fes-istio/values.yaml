@@ -31,20 +31,6 @@ authPolicy:
 istio-ingress:
   enabled: true
   gateways:
-    service:
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "15020"
-    ports:
-      - name: http2
-        port: 80
-        targetPort: 8080
-      - name: https
-        port: 443
-        targetPort: 8443
-      - name: prometheus
-        port: 15020
-        targetPort: 15020
     istio-ingressgateway:
       name: istio-ingressgateway
       labels:
@@ -73,6 +59,21 @@ istio-ingress:
         alb.ingress.kubernetes.io/healthcheck-port: "status-port"
       nodeSelector: {}
       tolerations: []
+
+      # ✅ Enable Prometheus Metrics
+      service:
+        ports:
+          - name: prometheus
+            port: 15020
+            targetPort: 15020
+
+      k8s:
+        env:
+          - name: ISTIO_META_ENABLE_STATS
+            value: "true"
+          - name: ISTIO_PROMETHEUS_PORT
+            value: "15020"
+
 
   global:
     # Used to locate istiod.
