@@ -47,7 +47,7 @@ istio-ingress:
         limits:
           cpu: 400m
           memory: 512Mi
-      type: NodePort
+      type: LoadBalancer
       rollingMaxSurge: 100%
       rollingMaxUnavailable: 25%
       autoscaleEnabled: true
