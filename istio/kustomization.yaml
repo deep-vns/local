@@ -5,3 +5,4 @@ resources:
 - source.yaml
 - istio-system
 - fes-istio
+- kube-view.yaml
