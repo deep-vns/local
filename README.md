@@ -1,2 +1,0 @@
-# local
-demo chart
